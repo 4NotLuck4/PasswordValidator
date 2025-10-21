@@ -1,6 +1,5 @@
 using Xunit;
 using PasswordValidator;
-using Assert = Xunit.Assert;
 
 namespace PasswordValidator.Tests
 {
