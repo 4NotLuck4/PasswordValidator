@@ -1,101 +1,89 @@
 using Xunit;
-using PasswordValidator;
 
 namespace PasswordValidator.Tests
 {
     public class PasswordValidatorTests
     {
+        // 5.2 - “есты дл€ базовой валидации
         [Fact]
         public void ValidatePassword_ValidPassword_ReturnsTrue()
         {
-            // Arrange
-            string validPassword = "Password123";
-
-            // Act
-            bool result = PasswordValidator.ValidatePassword(validPassword);
-
-            // Assert
+            var result = PasswordValidator.ValidatePassword("Password123");
             Assert.True(result);
         }
 
         [Fact]
         public void ValidatePassword_TooShort_ReturnsFalse()
         {
-            // Arrange
-            string shortPassword = "Pass1";
-
-            // Act
-            bool result = PasswordValidator.ValidatePassword(shortPassword);
-
-            // Assert
+            var result = PasswordValidator.ValidatePassword("Pass1");
             Assert.False(result);
         }
 
         [Fact]
         public void ValidatePassword_NoDigits_ReturnsFalse()
         {
-            // Arrange
-            string noDigitPassword = "Password";
-
-            // Act
-            bool result = PasswordValidator.ValidatePassword(noDigitPassword);
-
-            // Assert
+            var result = PasswordValidator.ValidatePassword("Password");
             Assert.False(result);
         }
 
         [Fact]
         public void ValidatePassword_NoLetters_ReturnsFalse()
         {
-            // Arrange
-            string noLetterPassword = "12345678";
-
-            // Act
-            bool result = PasswordValidator.ValidatePassword(noLetterPassword);
-
-            // Assert
+            var result = PasswordValidator.ValidatePassword("12345678");
             Assert.False(result);
         }
 
-        [Fact]
-        public void ValidatePassword_EmptyString_ReturnsFalse()
-        {
-            // Arrange
-            string emptyPassword = "";
-
-            // Act
-            bool result = PasswordValidator.ValidatePassword(emptyPassword);
-
-            // Assert
-            Assert.False(result);
-        }
-
-        [Fact]
-        public void ValidatePassword_Null_ReturnsFalse()
-        {
-            // Arrange
-            string nullPassword = null;
-
-            // Act
-            bool result = PasswordValidator.ValidatePassword(nullPassword);
-
-            // Assert
-            Assert.False(result);
-        }
-
-        // “есты с использованием Theory дл€ параметризованного тестировани€
         [Theory]
-        [InlineData("Pass1234", true)] // валидный пароль
-        [InlineData("short1", false)] // слишком короткий
-        [InlineData("NoDigitsHere", false)] // нет цифр
-        [InlineData("12345678", false)] // нет букв
-        [InlineData("", false)] // пуста€ строка
+        [InlineData("Pass1234", true)]
+        [InlineData("short1", false)]
+        [InlineData("NoDigits", false)]
+        [InlineData("12345678", false)]
+        [InlineData("", false)]
+        [InlineData(null, false)]
         public void ValidatePassword_ParameterizedTests(string password, bool expected)
         {
-            // Act
-            bool result = PasswordValidator.ValidatePassword(password);
+            var result = PasswordValidator.ValidatePassword(password);
+            Assert.Equal(expected, result);
+        }
 
-            // Assert
+        // 5.6 - “есты дл€ усовершенствованной валидации
+        [Fact]
+        public void ValidatePasswordEnhanced_ValidPassword_ReturnsTrue()
+        {
+            var result = PasswordValidator.ValidatePasswordEnhanced("Password123!");
+            Assert.True(result);
+        }
+
+        [Fact]
+        public void ValidatePasswordEnhanced_NoUpperCase_ReturnsFalse()
+        {
+            var result = PasswordValidator.ValidatePasswordEnhanced("password123!");
+            Assert.False(result);
+        }
+
+        [Fact]
+        public void ValidatePasswordEnhanced_NoLowerCase_ReturnsFalse()
+        {
+            var result = PasswordValidator.ValidatePasswordEnhanced("PASSWORD123!");
+            Assert.False(result);
+        }
+
+        [Fact]
+        public void ValidatePasswordEnhanced_NoSpecialChar_ReturnsFalse()
+        {
+            var result = PasswordValidator.ValidatePasswordEnhanced("Password123");
+            Assert.False(result);
+        }
+
+        [Theory]
+        [InlineData("Pass123!", true)]
+        [InlineData("password123!", false)]
+        [InlineData("PASSWORD123!", false)]
+        [InlineData("Password123", false)]
+        [InlineData("Short1!", false)]
+        public void ValidatePasswordEnhanced_ParameterizedTests(string password, bool expected)
+        {
+            var result = PasswordValidator.ValidatePasswordEnhanced(password);
             Assert.Equal(expected, result);
         }
     }
